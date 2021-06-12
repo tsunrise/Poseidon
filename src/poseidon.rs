@@ -360,7 +360,7 @@ pub fn poseidon_parameters_for_test1<F: PrimeField>(mut pos: Poseidon<F, Typ1>) 
     let  rng1 = F::rand(&mut rng);
     let mut vals: Vec<F> = vec![rng1];
     let mut  k = 0;
-    for i in 0..1332 {
+    for i in 0..269 {
         k = k + 1;
         seed[i%8] = seed[i%8]+1;
         let mut rng = ChaCha20Rng::from_seed(seed);
