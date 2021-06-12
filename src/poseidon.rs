@@ -126,7 +126,7 @@ pub(crate) fn crh_circuit_helper(
     pos_param_var: PoseidonRoundParamsVar<Fq,Typ1>,
 ) -> Result<(), SynthesisError> {
 
-	// step 1. Allocate seed
+	// step 1. Allocate parameter
     //let posidenparam= poseidon_parameters_for_test() ;
     let parameters_var = pos_param_var;
 	// step 2. Allocate inputs
