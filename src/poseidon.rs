@@ -1,7 +1,7 @@
 use ark_crypto_primitives::{
 	SNARK,
     crh::{poseidon, poseidon::sbox::PoseidonSbox,
-        poseidon::Poseidon,poseidon::PoseidonCRH,poseidon::constraints::{PoseidonCRHGadget,PoseidonRoundParamsVar},FixedLengthCRH,FixedLengthCRHGadget},
+        poseidon::Poseidon,poseidon::CRH,poseidon::constraints::{CRHGadget,PoseidonRoundParamsVar},CRH as CRHTrait,CRHGadget as CRHGadgetTrait},
 };
 use ark_relations::r1cs::{ConstraintSynthesizer, ConstraintSystemRef, SynthesisError};
 use ark_bls12_381::Bls12_381;
@@ -37,9 +37,9 @@ impl poseidon::PoseidonRoundParams<Fq> for PParams {
 }
 
 pub type PoseidonParam =Poseidon<Fq, PParams>;
-pub type CRHFunction =PoseidonCRH<Fq, PParams>;
-pub type CRHOutput= <CRHFunction as FixedLengthCRH>::Output;
-pub type CRHParam=<CRHFunction as FixedLengthCRH>::Parameters;
+pub type CRHFunction =CRH<Fq, PParams>;
+pub type CRHOutput= <CRHFunction as CRHTrait>::Output;
+pub type CRHParam=<CRHFunction as CRHTrait>::Parameters;
 pub type CRHInput = [u8; 32];
 
 //#[derive(Clone)]
@@ -66,7 +66,7 @@ impl ConstraintSynthesizer<Fq> for CRHCircuit{
 #[allow(dead_code)]
 pub fn groth_param_gen_p(param11: PoseidonParam) -> <Groth16<Bls12_381> as SNARK<Fq>>::ProvingKey {
 	let inpt = [32u8; 32]; 
-	let out = <CRHFunction as FixedLengthCRH>::evaluate(&param11, &inpt).unwrap();
+	let out = <CRHFunction as CRHTrait>::evaluate(&param11, &inpt).unwrap();
 
     let circuit = CRHCircuit {
         param: param11,
@@ -115,10 +115,10 @@ pub(crate) fn crh_circuit_helper(
 	let input_var = UInt8::new_witness_vec(ark_relations::ns!(cs, "declare_input"), input)?;
 	
 	// step 3. Allocate evaluated output
-	let output_var = PoseidonCRHGadget::evaluate(&parameters_var, &input_var)?;
+	let output_var = CRHGadget::evaluate(&parameters_var, &input_var)?;
 
 	// step 4. Actual output
-	 let actual_out_var = <PoseidonCRHGadget<Fq,PParams> as FixedLengthCRHGadget<_,Fq >>::OutputVar::new_input(
+	 let actual_out_var = <CRHGadget<Fq,PParams> as CRHGadgetTrait<_,Fq >>::OutputVar::new_input(
 	 	ark_relations::ns!(cs, "declare_output"),
 	 	|| Ok(output),
 	 )?;
