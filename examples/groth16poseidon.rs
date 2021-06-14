@@ -1,4 +1,4 @@
-use ark_crypto_primitives::{FixedLengthCRH};
+use ark_crypto_primitives::{CRH as CRHTrait};
 use poseidon_from_arkworks::*;
 use std::time::Instant;
 use rand_chacha::ChaCha20Rng;
@@ -14,7 +14,7 @@ fn main() {
 	let inp= [32u8; 32];
 	//output
 	let out =
-	 <CRHFunction as FixedLengthCRH>::evaluate(&parameter, &inp).unwrap();
+	 <CRHFunction as CRHTrait>::evaluate(&parameter, &inp).unwrap();
 
      // build the circuit
     let circuit = CRHCircuit {
