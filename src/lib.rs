@@ -1,6 +1,7 @@
 #![no_std]
 
 pub mod poseidon;
+mod test;
 //mod test_poss;
 //mod poseidon_com;
 
